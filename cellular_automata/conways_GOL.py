@@ -1,5 +1,7 @@
 import copy
 import time
+
+# fmt: off
 copyWorld = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -94,6 +96,7 @@ conwayOnOff = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]
+# fmt: on
 
 
 def conwaysGoL():
@@ -133,14 +136,14 @@ def conwaysGoL():
     conwayOnOff = copy.deepcopy(conwayNew)
     return conwayOnOff
 
+
 def copyW():
     global copyWorld
     conwayNew = copy.deepcopy(copyWorld)
     columnLen = len(copyWorld)
     rowLen = len(copyWorld[0])
-    for nthRow in range(columnLen):  # y
-        for nthColumn in range(rowLen):  # x
-            state = copyWorld[nthRow][nthColumn]
+    for nthRow in range(columnLen):
+        for nthColumn in range(rowLen):
             neighbors = 0
             if copyWorld[nthRow - 1][nthColumn] == 1:
                 neighbors += 1
@@ -159,7 +162,7 @@ def copyW():
             if copyWorld[nthRow - 1][nthColumn - 1] == 1:
                 neighbors += 1
 
-            if neighbors%2 == 0:
+            if neighbors % 2 == 0:
                 conwayNew[nthRow][nthColumn] = 0
             else:
                 conwayNew[nthRow][nthColumn] = 1
@@ -167,57 +170,72 @@ def copyW():
     copyWorld = copy.deepcopy(conwayNew)
     return copyWorld
 
+
 def printArrBlocks(array):
     for i in range(len(array)):
         for j in range(len(array[0])):
             if array[i][j] == 1:
-                print('██', end='')
+                print("██", end="")
             else:
-                print('░░', end='')
-        print('')
-    print("______________________________________________________________________________________")
+                print("░░", end="")
+        print("")
+    print(
+        "______________________________________________________________________________________"
+    )
+
+
 def printArrSquares(array):
     for i in range(len(array)):
         for j in range(len(array[0])):
             if array[i][j] == 1:
-                print('⬜', end='')
+                print("⬜", end="")
             else:
-                print('⬛', end='')
-        print('')
-    print("______________________________________________________________________________________")
+                print("⬛", end="")
+        print("")
+    print(
+        "______________________________________________________________________________________"
+    )
+
+
 def printArrTile(array):
     for i in range(len(array)):
         for j in range(len(array[0])):
             if array[i][j] == 1:
-                print('\u25A1', end='')
+                print("\u25a1", end="")
             else:
-                print('\u25A0', end='')
-        print('')
-    print("______________________________________________________________________________________")
+                print("\u25a0", end="")
+        print("")
+    print(
+        "______________________________________________________________________________________"
+    )
 
 
 def printArr01(array):
     for i in range(len(array)):
         for j in range(len(array[0])):
-            print(array[i][j], end='')
+            print(array[i][j], end="")
 
-        print('')
-    print("______________________________________________________________________________________")
+        print("")
+    print(
+        "______________________________________________________________________________________"
+    )
 
 
 def printArrX(array):
     # print('|', end='')
     for i in range(len(array)):
-        print('|', end='')
+        print("|", end="")
         for j in range(len(array[0])):
-            if (array[i][j] == 1):
-                print('#', end='')
+            if array[i][j] == 1:
+                print("#", end="")
             else:
-                print(" ", end='')
-            print('|', end='')
+                print(" ", end="")
+            print("|", end="")
 
-        print('')
-    print("______________________________________________________________________________________")
+        print("")
+    print(
+        "______________________________________________________________________________________"
+    )
 
 
 def neighborsAt(y, x):
