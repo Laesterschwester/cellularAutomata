@@ -1,213 +1,113 @@
+from curses import wrapper
+import curses
+import conways_gol
 import time
 
-import conways_GOL
+ON = "⚪" #"⬜"
+OFF = "⚫" #"⬛"
+HIGHLIGHT = "▓▓"
+# ░░
 
 
-class Wolfram:
-    # fmt: off
-    rules = [
-        [0, 1, 1, 1, 1, 0, 1, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 1, 1, 1, 1, 0, 0, 0],
-        [0, 1, 1, 1, 0, 1, 1, 0],
-        [0, 1, 0, 1, 1, 0, 1, 0]
-    ]
-    # fmt: on
-
-    @classmethod
-    def automata(cls, array, newArr, i, rule):
-        arr = []
-        if i == len(array) - 1:
-            arr.append(array[i - 1])
-            arr.append(array[i])
-            arr.append(array[0])
-        else:
-            arr.append(array[i - 1])
-            arr.append(array[i])
-            arr.append(array[i + 1])
-        if arr == [0, 0, 0]:
-            newArr[i] = Wolfram.rules[rule][0]
-            return
-        if arr == [0, 0, 1]:
-            newArr[i] = Wolfram.rules[rule][1]
-            return
-        if arr == [0, 1, 0]:
-            newArr[i] = Wolfram.rules[rule][2]
-            return
-        if arr == [0, 1, 1]:
-            newArr[i] = Wolfram.rules[rule][3]
-            return
-        if arr == [1, 0, 0]:
-            newArr[i] = Wolfram.rules[rule][4]
-            return
-        if arr == [1, 0, 1]:
-            newArr[i] = Wolfram.rules[rule][5]
-            return
-        if arr == [1, 1, 0]:
-            newArr[i] = Wolfram.rules[rule][6]
-            return
-        if arr == [1, 1, 1]:
-            newArr[i] = Wolfram.rules[rule][7]
-            return
-
-    @classmethod
-    def printArrBlocks(cls, array):
-        for i in range(len(array)):
-            for j in range(len(array[0])):
-                if array[i][j] == 1:
-                    print("▓▓", end="")
+def draw_screen(arr, mouse_position, stdscr):
+    mouse_position[0] = mouse_position[0] // 2
+    max_yx = stdscr.getmaxyx()
+    for y in range(len(arr)):
+        for x in range(len(arr[0])):
+            # cant addstr bottom right cell
+            if y + 1 == max_yx[0] and (x + 1) * 2 >= max_yx[1]:
+                if arr[y][x]:
+                    stdscr.insnstr(y, x * 2, ON, 2)
                 else:
-                    print("░░", end="")
-            print("")
-        print(
-            "______________________________________________________________________________________"
-        )
-
-    @classmethod
-    def printArr(cls, array):
-        print("|", end="")
-        for i in range(len(array)):
-            if array[i] == 1:
-                print("#", end="")
+                    stdscr.insnstr(y, x * 2, OFF, 2)
             else:
-                print(" ", end="")
-            print("|", end="")
-        print("")
-
-    @classmethod
-    def printArrSquares(cls, array):
-        for i in range(len(array)):
-            if array[i] == 1:
-                print("⬜", end="")
-            else:
-                print("⬛", end="")
-        print("")
-
-    @classmethod
-    def wolframGame(cls):
-        array = [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        ]
-        Wolfram.printArrSquares(array)
-        newArray = []
-        for i in range(len(array)):
-            newArray.append(0)
-        while 1:
-            # for a in range(50):
-            for i in range(len(array)):
-                Wolfram.automata(array, newArray, i, 4)
-            time.sleep(0.1)
-            Wolfram.printArrSquares(newArray)
-            array = list(newArray)
+                if arr[y][x]:
+                    stdscr.addstr(y, x * 2, ON)
+                else:
+                    stdscr.addstr(y, x * 2, OFF)
 
 
-if __name__ == "__main__":
-    # Wolfram.wolframGame()
-    conways_GOL.main()
-    pass
+def toggle_block(game_board, mouse_position):
+    pos = mouse_pos_to_arr_pos(mouse_position)
+    game_board[pos[0]][pos[1]] = not game_board[pos[0]][pos[1]]
+
+
+def mouse_pos_to_arr_pos(mouse_position):
+    return [mouse_position[1], mouse_position[0] // 2]
+
+
+def init_game_arr(cols, rows, base_game=None):
+    if not base_game:
+        return [[False for x in range(cols // 2)] for y in range(rows)]
+
+    # TODO: copy base_game over
+    # cols = min(len(base_game), cols)
+    # rows = min(len(base_game[0]), rows)
+
+    # return [base_game[:rows][:cols]] ...
+
+
+def main(stdscr):
+    curses.mouseinterval(0)
+    curses.curs_set(0)
+    curses.mousemask(curses.ALL_MOUSE_EVENTS | curses.REPORT_MOUSE_POSITION)
+    print("\033[?1003h\n")
+    stdscr.nodelay(True)
+    rows, cols = stdscr.getmaxyx()
+
+    mouse_position = [0, 0]
+    game_board = init_game_arr(cols, rows)
+    paused = True
+    looping_borders = True
+    time_between_frames = 0.2
+
+    last_time = time.perf_counter()
+    dtime = 0
+
+    while True:
+        key = stdscr.getch()
+
+        if key == curses.KEY_RESIZE:
+            # TODO
+            rows, cols = stdscr.getmaxyx()
+
+            game_board = init_game_arr(cols, rows)
+            pass
+
+        # escape
+        if key == 27:
+            quit()
+
+        if key == ord("c"):
+            # clear board
+            game_board = [
+                [False for x in range(curses.COLS // 2)] for y in range(curses.LINES)
+            ]
+
+        if key == curses.KEY_MOUSE:
+            try:
+                event = curses.getmouse()
+                mouse_position = [event[1], event[2]]
+
+                if (
+                    event[4] & curses.BUTTON1_PRESSED
+                    or event[4] & curses.BUTTON1_CLICKED
+                ):
+                    toggle_block(game_board, mouse_position)
+            except curses.error:
+                pass
+
+        if key == ord(" "):
+            paused = not paused
+
+        current_time = time.perf_counter()
+        dtime = current_time - last_time
+        if (not paused) and dtime > time_between_frames:
+            last_time = current_time
+            game_board = conways_gol.update_conways_gol(game_board, looping_borders)
+
+        draw_screen(game_board, mouse_position, stdscr)
+
+        stdscr.refresh()
+
+wrapper(main)
