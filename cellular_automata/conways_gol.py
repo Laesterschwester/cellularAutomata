@@ -1,14 +1,11 @@
-import copy
-
-
-def update_conways_gol(conways_arr, looping_borders):
-    new_conway = copy.deepcopy(conways_arr)
-    rows = len(conways_arr)
-    cols = len(conways_arr[0])
+def update_conways_gol(game_state, looping_borders):
+    updated_cells = []
+    rows = len(game_state)
+    cols = len(game_state[0])
 
     for i_row in range(rows):
         for i_col in range(cols):
-            state = conways_arr[i_row][i_col]
+            state = game_state[i_row][i_col]
             neighbors = 0
 
             # fmt: off
@@ -25,30 +22,35 @@ def update_conways_gol(conways_arr, looping_borders):
                     di_col = i_col + d_col
 
                     if di_row < 0:
-                        di_row = len(conways_arr) - 1
-                    if di_row >= len(conways_arr):
+                        di_row = len(game_state) - 1
+                    if di_row >= len(game_state):
                         di_row = 0
                     if di_col < 0:
-                        di_col = len(conways_arr[0]) - 1
-                    if di_col >= len(conways_arr[0]):
+                        di_col = len(game_state[0]) - 1
+                    if di_col >= len(game_state[0]):
                         di_col = 0
 
-                    if conways_arr[di_row][di_col]:
+                    if game_state[di_row][di_col]:
                         neighbors += 1
             else:
                 for d_col, d_row in dirs:
                     if 0 <= i_row + d_row < len(
-                        conways_arr
-                    ) and 0 <= i_col + d_col < len(conways_arr[0]):
-                        if conways_arr[i_row + d_row][i_col + d_col]:
+                        game_state
+                    ) and 0 <= i_col + d_col < len(game_state[0]):
+                        if game_state[i_row + d_row][i_col + d_col]:
                             neighbors += 1
 
             if state == 0 and neighbors == 3:
-                new_conway[i_row][i_col] = 1
+                updated_cells.append([i_row, i_col, True])
+
             if state == 1:
                 if neighbors < 2:
-                    new_conway[i_row][i_col] = 0
+                    updated_cells.append([i_row, i_col, False])
                 if neighbors > 3:
-                    new_conway[i_row][i_col] = 0
+                    updated_cells.append([i_row, i_col, False])
 
-    return new_conway
+    for update in updated_cells:
+        row, col, is_alive = update
+        game_state[row][col] = is_alive
+
+    return game_state, updated_cells
