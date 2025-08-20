@@ -2,8 +2,6 @@ import copy
 
 
 def update_conways_gol(conways_arr, looping_borders):
-    # TODO: switch to array that only holds updated cells
-
     new_conway = copy.deepcopy(conways_arr)
     rows = len(conways_arr)
     cols = len(conways_arr[0])
