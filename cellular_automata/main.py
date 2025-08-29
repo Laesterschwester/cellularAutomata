@@ -2,6 +2,7 @@ from curses import wrapper
 import curses
 import conways_gol
 import time
+import signal
 
 ON = "⚪"  # "⬜"
 OFF = "⚫"  # "⬛"
@@ -60,6 +61,8 @@ def init_game_state(screen_dimensions, prev_game_state=None):
             game_state[row][col] = prev_game_state[row][col]
     return game_state
 
+def signal_handler(sig, frame):
+    quit()
 
 def main(stdscr):
     curses.mouseinterval(0)
@@ -79,6 +82,7 @@ def main(stdscr):
     dtime = 0
 
     update_screen(screen_dimensions, game_state, mouse_position, stdscr)
+    signal.signal(signal.SIGINT, signal_handler)
 
     while True:
         updated_cells = []
