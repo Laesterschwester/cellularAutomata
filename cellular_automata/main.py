@@ -3,6 +3,7 @@ import curses
 import conways_gol
 import time
 import signal
+import sys
 
 ON = "⚪"  # "⬜"
 OFF = "⚫"  # "⬛"
@@ -61,8 +62,10 @@ def init_game_state(screen_dimensions, prev_game_state=None):
             game_state[row][col] = prev_game_state[row][col]
     return game_state
 
+
 def signal_handler(sig, frame):
-    quit()
+    sys.exit()
+
 
 def main(stdscr):
     curses.mouseinterval(0)
@@ -96,7 +99,7 @@ def main(stdscr):
 
         # escape
         if key == 27:
-            quit()
+            sys.exit()
 
         if key == ord("c"):
             game_state = init_game_state(screen_dimensions)
